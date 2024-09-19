@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今日の当番を決めてください</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            font-size: 24px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        #selectedMember {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>参加者</h1>
+    <ul id="memberList">
+
+    </ul>
+    <button id="startButton">Start</button> 
+    
+    <p id="selectedMember"></p>
+
+    <!-- JavaScriptの読み込み -->
+    <script src="lottery.js"></script> <!-- JavaScriptファイルをリンクします -->
+</body>
+</html>
