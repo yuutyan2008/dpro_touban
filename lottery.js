@@ -4,19 +4,19 @@ const members = [
     id: 2,
     name: "尾澤",
     entranceData: "2024-07-01",
-    expirationDate: "2024-10-30",
+    expirationDate: "2024-10-21",
   },
   {
     id: 3,
     name: "荻野",
     entranceData: "2024-09-01",
-    expirationDate: "2024-12-31",
+    expirationDate: "2024-12-20",
   },
   {
     id: 4,
     name: "高野",
     entranceData: "2024-09-01",
-    expirationDate: "2024-12-31",
+    expirationDate: "2024-12-20",
   },
 ];
 
@@ -49,12 +49,15 @@ let activeMembers = members.filter(function(member) {
 
 
 
-// 名前一覧とチェックボックスを作成する関数
+// 名前一覧とチェックボックス、残り日数を作成する関数
 function createCheckboxName_List(member) {
+  const daysLeft = calcDays_left(member.expirationDate); // 残り日数を計算する関数を呼び出し
   const listItem = document.createElement("li"); // 新しい<li>要素を生成
   listItem.innerHTML = `
-    <input type="checkbox" id="${member.id}">
     <label for="${member.id}">${member.name}</label>
+    <input type="checkbox" id="${member.id}">
+    <span> 残り在籍日数: ${daysLeft} 日</span>
+    
   `; // メンバー名とチェックボックスを挿入
   return listItem;
 }
