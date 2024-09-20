@@ -20,7 +20,12 @@ const members = [
   },
 ];
 
-// 今日の日付を取得し、残りの在籍日数を計算
+// 
+// くじを引くメンバーを決める
+// 
+
+
+// 今日の日付を取得し、残りの在籍日数を計算する関数を定義
 function calcDays_left(expirationDate) {
   const today = new Date(); // 今日の日付を取得
   const expiration = new Date(expirationDate); // 有効期限の日付をDateオブジェクトに変換
@@ -32,9 +37,9 @@ function calcDays_left(expirationDate) {
   return daysLeft;
 }
 
-// 在籍期限が切れていないメンバーだけを取り出すためのフィルタリングを行う
+// 在籍期限が切れていないメンバーだけを取り出すためのフィルタリングを実行
 // members配列の要素を一つずつ取り出し関数で処理、条件を満たす要素を返す
-const activeMembers = members.filter(function(member) {
+let activeMembers = members.filter(function(member) {
   // メンバーの有効期限（expirationDate）を使って、残りの日数を計算
   const leftDays = calcDays_left(member.expirationDate);
   
@@ -42,43 +47,74 @@ const activeMembers = members.filter(function(member) {
   return leftDays > 0; 
 });
 
-// フィルタリング後、名前一覧とチェックボックスを表示する
-function displayMembers() {
+
+
+// 名前一覧とチェックボックスを作成する関数
+function createCheckboxName_List(member) {
+  const listItem = document.createElement("li"); // 新しい<li>要素を生成
+  listItem.innerHTML = `
+    <input type="checkbox" id="${member.id}">
+    <label for="${member.id}">${member.name}</label>
+  `; // メンバー名とチェックボックスを挿入
+  return listItem;
+}
+
+// フィルタリング後、名前一覧とチェックボックスを表示する関数
+function displayMembers(members) {
   const memberList = document.getElementById("memberList");
   memberList.innerHTML = ""; // 過去のリストをクリア
 
   activeMembers.forEach(function (member) {
-    const listItem = document.createElement("li"); //新しい<li>を生成
-    listItem.innerHTML = `
-        <input type="checkbox" id="${member.id}">
-        <label for="${member.id}">${member.name}</label>
-      `; //新しい<li>にタグを追加
+    const listItem = createCheckboxName_List(member); // リストアイテムを生成
+    //新しい<li>にタグを追加
     memberList.appendChild(listItem);
   });
 }
 
-// 表示一覧からくじ引き対象外のメンバーを除外する
+displayMembers()
+
+//
+// くじの実行
+//
+
+
+
+const startButton = document.getElementById('startButton');
+const resetButton = document.getElementById('resetButton');
+
+// 対象外メンバーを除外するイベントを登録
+startButton.addEventListener("click", excludeMembers);
+// 当番を選ぶイベントを登録
+startButton.addEventListener("click", selectRandomMember);
+startButton.addEventListener("click", runLottery);
+// debugger
+// リセット登録
+resetButton.addEventListener("click", reset);
+
+
+
+// 表示一覧からチェックの入ったメンバーを除外する関数を定義
 function excludeMembers() {
-  return members.filter(function(activeMembers) {
-    const checkbox = document.getElementById(`${member.id}`);//idの値member.idを取り出している
+  activeMembers = activeMembers.filter(function(member) {
+    const checkbox = document.getElementById(`${member.id}`);//id = member.idを取り出している
     return !checkbox.checked; // チェックが入っていないメンバー(idで判別)だけを残す
   });
 }
 
 // 当番を選ぶ関数を定義
-function selectRandomMember(activeMembers) {
-  const randomResult = Math.floor(Math.random() * activeMembers.length); // 0〜メンバー数-1のランダムなインデックスを取得
-  return members[randomResult]; // ランダムに選ばれたメンバーを返す
+function selectRandomMember() {
+
+  const randomResult = Math.floor(Math.random() * activeMembers.length); // ランダムインデックスを取得
+  return activeMembers[randomResult]; // ランダムに選ばれたメンバーを返す
 }
 
-// 対象外メンバーを除外後、startをクリックすると当番が選ばれる
-const startlottery = document.getElementById("startButton");
-startlottery.addEventListener("click", function () {
-  // チェックボックスで除外されていないメンバーだけを対象とする
-  activeMembers = excludeMembers(); // ← ここでactiveMembersを更新
-
-  if (activeMembers.length > 1) {
-    const selectedMember = selectRandomMember(activeMembers); // ランダムにメンバーを選ぶ
+// くじ引き処理
+function runLottery() {
+  // debugger
+  // チェックボックスで除外されていないメンバーのみを対象とする
+  excludeMembers(); // ← activeMembers を更新する
+  if (activeMembers && activeMembers.length > 0) {
+    const selectedMember = selectRandomMember(); // ランダムにメンバーを選ぶ
     document.getElementById(
       "selectedMember"
     ).textContent = `明日の担当は、${selectedMember.name} さんです！`; // メンバーを表示
@@ -86,7 +122,24 @@ startlottery.addEventListener("click", function () {
     document.getElementById("selectedMember").textContent =
       "有効なメンバーがいません"; // メンバーがいない場合
   }
-});
+}
 
-// 結果を表示
-displayMembers();
+
+  // リセット
+  function reset() {
+
+    const checkbox = document.getElementById(`${member.id}`);//id = member.idを取り出している
+
+    activeMembers.forEach(function (member) {
+      const checkbox = document.getElementById(`${member.id}`); // メンバーのチェックボックスを取得
+      if (checkbox) {
+        checkbox.checked = false; // チェックを解除
+      }
+    });
+    // 当番結果をクリア
+    document.getElementById("selectedMember").textContent = "";
+
+  }
+
+// フィルタリング後、名前一覧とチェックボックスを表示する関数を実行
+// window.onload = displayMembers;
