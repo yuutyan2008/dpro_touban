@@ -129,7 +129,8 @@ function runLottery() {
 
 
   // リセット
-  function reset() {
+  function reset(member) {
+// debugger
 
     const checkbox = document.getElementById(`${member.id}`);//id = member.idを取り出している
 
